@@ -1,13 +1,52 @@
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import YahooFinance from "yahoo-finance2";
 
 const yf = new YahooFinance({ suppressNotices: ["yahooSurvey"] });
 const app = express();
+const PORT = process.env.PORT || 3001;
+
+// ─── Rate Limiting ──────────────────────────────────────────────────────────
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 دقيقة
+  max: 30, // أقصى 30 طلب بالدقيقة
+  message: { error: "طلبات كثيرة. انتظر دقيقة وحاول مجدداً." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
 app.use(cors());
+
+// ─── Cache ──────────────────────────────────────────────────────────────────
+const cache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 دقائق
+
+function getCached(key) {
+  const entry = cache.get(key);
+  if (entry && Date.now() - entry.time < CACHE_TTL) return entry.data;
+  cache.delete(key);
+  return null;
+}
+
+function setCache(key, data) {
+  cache.set(key, { data, time: Date.now() });
+  // تنظيف الكاش القديم كل 10 دقائق
+  if (cache.size > 100) {
+    const now = Date.now();
+    for (const [k, v] of cache) {
+      if (now - v.time > CACHE_TTL) cache.delete(k);
+    }
+  }
+}
+
+// ─── API Routes ─────────────────────────────────────────────────────────────
 
 app.get("/api/stock/:ticker", async (req, res) => {
   const { ticker } = req.params;
+  const cached = getCached(`stock:${ticker}`);
+  if (cached) return res.json(cached);
+
   try {
     const quote = await yf.quote(ticker);
     let sum = {};
@@ -22,7 +61,7 @@ app.get("/api/stock/:ticker", async (req, res) => {
     const det = sum.summaryDetail || {};
     const prof = sum.assetProfile || {};
 
-    res.json({
+    const result = {
       ticker,
       name: quote.shortName || quote.longName || ticker,
       price: quote.regularMarketPrice ?? null,
@@ -66,7 +105,10 @@ app.get("/api/stock/:ticker", async (req, res) => {
       ebitda: fin.ebitda ?? null,
       heldPercentInsiders: key.heldPercentInsiders ?? null,
       heldPercentInstitutions: key.heldPercentInstitutions ?? null,
-    });
+    };
+
+    setCache(`stock:${ticker}`, result);
+    res.json(result);
   } catch (err) {
     console.error(`Error ${ticker}:`, err.message);
     res.status(404).json({ error: `لم يتم العثور على "${ticker}".` });
@@ -75,6 +117,9 @@ app.get("/api/stock/:ticker", async (req, res) => {
 
 app.get("/api/history/:ticker", async (req, res) => {
   const { ticker } = req.params;
+  const cached = getCached(`history:${ticker}`);
+  if (cached) return res.json(cached);
+
   try {
     const period1 = new Date();
     period1.setFullYear(period1.getFullYear() - 10);
@@ -88,7 +133,10 @@ app.get("/api/history/:ticker", async (req, res) => {
       price: q.close != null ? +q.close.toFixed(2) : null,
       volume: q.volume ?? null,
     })).filter(q => q.price != null);
-    res.json({ ticker, history });
+
+    const data = { ticker, history };
+    setCache(`history:${ticker}`, data);
+    res.json(data);
   } catch (err) {
     console.error(`History ${ticker}:`, err.message);
     res.status(404).json({ error: `لا بيانات تاريخية.` });
@@ -97,6 +145,9 @@ app.get("/api/history/:ticker", async (req, res) => {
 
 app.get("/api/earnings/:ticker", async (req, res) => {
   const { ticker } = req.params;
+  const cached = getCached(`earnings:${ticker}`);
+  if (cached) return res.json(cached);
+
   try {
     const quarterlyData = await yf.fundamentalsTimeSeries(ticker, {
       module: "financials",
@@ -127,21 +178,30 @@ app.get("/api/earnings/:ticker", async (req, res) => {
       earnings: q.netIncome ?? null,
     }));
 
-    res.json({ ticker, quarterly, yearly });
+    const data = { ticker, quarterly, yearly };
+    setCache(`earnings:${ticker}`, data);
+    res.json(data);
   } catch (err) {
     console.error(`Earnings ${ticker}:`, err.message);
     try {
       const q = await yf.quote(ticker);
-      res.json({
+      const data = {
         ticker,
         quarterly: [{ quarter: "TTM", revenue: null, earnings: null, epsActual: q.epsTrailingTwelveMonths, epsEstimate: null, surprise: null }],
         yearly: [],
-      });
+      };
+      setCache(`earnings:${ticker}`, data);
+      res.json(data);
     } catch {
       res.json({ ticker, quarterly: [], yearly: [] });
     }
   }
 });
 
-const PORT = 3001;
+// ─── Health Check ───────────────────────────────────────────────────────────
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", cache: cache.size });
+});
+
+// ─── Start Server ───────────────────────────────────────────────────────────
 app.listen(PORT, () => console.log(`✅ Server on http://localhost:${PORT}`));

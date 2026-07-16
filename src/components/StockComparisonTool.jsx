@@ -5,7 +5,7 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from "recharts";
 
-const API = "http://localhost:3001/api";
+const API = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
 const EXPLAIN = {
   marketCap: "القيمة السوقية هي إجمالي قيمة الشركة في السوق. تُحسب بضرب عدد الأسهم في سعر السهم. كلما كانت أكبر كانت الشركة أضخم.",
