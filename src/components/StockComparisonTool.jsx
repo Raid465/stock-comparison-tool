@@ -567,7 +567,7 @@ export default function StockComparisonTool() {
                 style={{ background: C.bg, color: C.text, border: `2px solid ${C.s2}` }} />
             </div>
             <button onClick={compare} disabled={loading}
-              className="w-full sm:w-auto px-8 py-3 rounded-xl font-bold transition-all hover:brightness-110 active:scale-95 disabled:opacity-50"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold transition-all hover:brightness-110 active:scale-95 disabled:opacity-50"
               style={{ background: "linear-gradient(135deg, #3b82f6, #1d4ed8)", color: "#fff" }}>
               {loading ? "⏳ جاري..." : "🔍 قارن"}
             </button>
