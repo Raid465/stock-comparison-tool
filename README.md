@@ -1,168 +1,168 @@
-# 📊 أداة مقارنة الأسهم | Stock Comparison Tool
+# 📊 Stock Comparison Tool
 
-أداة تفاعلية لمقارنة أسهم الشركات الأمريكية جنب بعض، تعرض بيانات مالية شاملة مع رسوم بيانية وتحليل مقارن.
-
----
-
-## 🖥️ الموقع
-
-> افتح المتصفح على `http://localhost:5173` بعد التشغيل
+An interactive tool for comparing US stocks side by side, displaying comprehensive financial data with charts and comparative analysis.
 
 ---
 
-## ✨ المميزات
+## 🖥️ Live Preview
 
-- ✅ مقارنة سهمين جنب بعض بشكل مباشر
-- ✅ بيانات مالية كاملة (P/E، EPS، هامش الربح، ROE، Beta، إلخ)
-- ✅ شارت سعر السهم لمدة 10 سنوات (Area Chart)
-- ✅ مقارنة أداء 10 سنوات بين السهمين (Line Chart)
-- ✅ شارت حجم التداول (Volume)
-- ✅ شارت الأرباح والإيرادات (ربع سنوي / سنوي)
-- ✅ Radar Chart للمقارنة الشاملة
-- ✅ Bar Chart للمقارنة المباشرة
-- ✅ جدول مقارنة تفصيلي مع تظليل الفائز
-- ✅ سعر الهدف من المحللين
-- ✅ شرح لكل مؤشر عند الضغط على علامة الاستفهام (?)
-- ✅ تصميم عصري متجاوب (Dark Mode)
+> Open your browser at `http://localhost:5173` after starting the project
 
 ---
 
-## 🛠️ التقنيات المستخدمة
+## ✨ Features
 
-| التقنية | الاستخدام |
-|---------|----------|
-| **React** | مكتبة الواجهة الأمامية |
-| **Vite** | أداة البناء والتطوير |
-| **Tailwind CSS** | التنسيق والتصميم |
-| **Recharts** | الرسوم البيانية |
-| **Express** | السيرفر الخلفي (Backend) |
-| **yahoo-finance2** | مكتبة جلب بيانات Yahoo Finance |
+- ✅ Compare two stocks side by side directly
+- ✅ Complete financial data (P/E, EPS, Profit Margin, ROE, Beta, etc.)
+- ✅ 10-year stock price chart (Area Chart)
+- ✅ 10-year performance comparison between two stocks (Line Chart)
+- ✅ Volume chart
+- ✅ Earnings & Revenue chart (Quarterly / Annual)
+- ✅ Radar Chart for comprehensive comparison
+- ✅ Bar Chart for direct comparison
+- ✅ Detailed comparison table with winner highlighting
+- ✅ Analyst target prices
+- ✅ Indicator explanations on hover (?)
+- ✅ Modern responsive design (Dark Mode)
 
 ---
 
-## 📁 هيكل المشروع
+## 🛠️ Tech Stack
+
+| Technology | Usage |
+|------------|-------|
+| **React** | Frontend library |
+| **Vite** | Build tool & dev server |
+| **Tailwind CSS** | Styling & design |
+| **Recharts** | Charts library |
+| **Express** | Backend server |
+| **yahoo-finance2** | Yahoo Finance data fetching |
+
+---
+
+## 📁 Project Structure
 
 ```
 stock-comparison-tool/
-├── server.js                          # السيرفر الخلفي (Express)
-├── index.html                         # الصفحة الرئيسية
-├── package.json                       # التبعيات والأوامر
-├── vite.config.js                     # إعدادات Vite
-├── tailwind.config.js                 # إعدادات Tailwind
-├── postcss.config.js                  # إعدادات PostCSS
-├── .gitignore                         # ملفات مستثناة من Git
-├── README.md                          # هذا الملف
+├── server.js                          # Backend server (Express)
+├── index.html                         # Main HTML page
+├── package.json                       # Dependencies & scripts
+├── vite.config.js                     # Vite configuration
+├── tailwind.config.js                 # Tailwind configuration
+├── postcss.config.js                  # PostCSS configuration
+├── .gitignore                         # Git ignored files
+├── README.md                          # This file
 └── src/
-    ├── main.jsx                       # نقطة البداية
-    ├── App.jsx                        # التطبيق الرئيسي
-    ├── index.css                      # أنماط Tailwind
+    ├── main.jsx                       # Entry point
+    ├── App.jsx                        # Main app component
+    ├── index.css                      # Tailwind styles
     └── components/
-        └── StockComparisonTool.jsx    # المكون الرئيسي
+        └── StockComparisonTool.jsx    # Main component
 ```
 
 ---
 
-## 🔧 كيف يعمل الكود
+## 🔧 How It Works
 
-### السيرفر (`server.js`)
+### Backend (`server.js`)
 
-السيرفر هو Express.js يعمل على **port 3001** ويوفر 3 endpoints:
+The server runs on **port 3001** and provides 3 endpoints:
 
-#### 1. بيانات السهم
+#### 1. Stock Data
 ```
 GET /api/stock/:ticker
 ```
-- يستخدم `yahoo-finance2` لجلب بيانات السهم من Yahoo Finance
-- يرجع: السعر، القيمة السوقية، P/E، EPS، هامش الربح، ROE، Beta، إلخ
+- Fetches stock data from Yahoo Finance using `yahoo-finance2`
+- Returns: Price, Market Cap, P/E, EPS, Profit Margin, ROE, Beta, etc.
 
-#### 2. البيانات التاريخية
+#### 2. Historical Data
 ```
 GET /api/history/:ticker
 ```
-- يرجع بيانات السعر لمدة 10 سنوات (شهرية)
-- يستخدم `chart()` من yahoo-finance2
+- Returns 10-year price data (monthly)
+- Uses `chart()` from yahoo-finance2
 
-#### 3. الأرباح والإيرادات
+#### 3. Earnings & Revenue
 ```
 GET /api/earnings/:ticker
 ```
-- يرجع بيانات ربعية (5 أرباع) وسنوية (5 سنين)
-- يستخدم `fundamentalsTimeSeries()` من yahoo-finance2
-- يحتوي على: الإيرادات، الأرباح، EPS
+- Returns quarterly (5 quarters) and annual (5 years) data
+- Uses `fundamentalsTimeSeries()` from yahoo-finance2
+- Contains: Revenue, Earnings, EPS
 
-### الواجهة (`src/components/StockComparisonTool.jsx`)
+### Frontend (`src/components/StockComparisonTool.jsx`)
 
-مكون React واحد يحتوي على كل العناصر:
+A single React component containing all elements:
 
-#### المكونات الفرعية:
+#### Sub-components:
 
-| المكون | الوظيفة |
-|--------|---------|
-| `StockInput` | حقل إدخال رمز السهم |
-| `Card` | بطاقة بيانات السهم |
-| `PriceHistoryChart` | شارت سعر 10 سنوات |
-| `DualPriceChart` | مقارنة أداء 10 سنوات |
-| `VolumeChart` | شارت حجم التداول |
-| `EarningsChart` | شارت الأرباح والإيرادات |
-| `ComparisonChart` | مقارنة مباشرة (Bar Chart) |
-| `RadarCompare` | مقارنة شاملة (Radar Chart) |
-| `Table` | جدول مقارنة تفصيلي |
-| `Summary` | خلاصة التحليل |
-| `InfoTip` | شرح المؤشرات (Tooltip) |
+| Component | Function |
+|-----------|----------|
+| `StockInput` | Stock ticker input field |
+| `Card` | Stock data card |
+| `PriceHistoryChart` | 10-year price chart |
+| `DualPriceChart` | 10-year performance comparison |
+| `VolumeChart` | Volume chart |
+| `EarningsChart` | Earnings & Revenue chart |
+| `ComparisonChart` | Direct comparison (Bar Chart) |
+| `RadarCompare` | Comprehensive comparison (Radar Chart) |
+| `Table` | Detailed comparison table |
+| `Summary` | Analysis summary |
+| `InfoTip` | Indicator explanations (Tooltip) |
 
-#### تدفق البيانات:
+#### Data Flow:
 
 ```
-المستخدم يضغط "قارن"
+User clicks "Compare"
        ↓
-fetch() لـ /api/stock/{ticker1} و /api/stock/{ticker2}
-fetch() لـ /api/history/{ticker1} و /api/history/{ticker2}
-fetch() لـ /api/earnings/{ticker1} و /api/earnings/{ticker2}
+fetch() to /api/stock/{ticker1} & /api/stock/{ticker2}
+fetch() to /api/history/{ticker1} & /api/history/{ticker2}
+fetch() to /api/earnings/{ticker1} & /api/earnings/{ticker2}
        ↓
-تخزين البيانات في useState
+Store data in useState
        ↓
-عرض البطاقات → الشارتات → الجدول → الخلاصة
+Display: Cards → Charts → Table → Summary
 ```
 
 ---
 
-## 🚀 التشغيل للمبتدئين (شرح مفصّل خطوة بخطوة)
+## 🚀 Getting Started (Step-by-Step Guide)
 
-### أولاً: المتطلبات
+### Prerequisites
 
-قبل ما تبدأ، لازم يكون عندك هالبرنامجين مثبّتين على جهازك:
+Before you begin, make sure you have the following installed:
 
 #### 1. Node.js
-- ادخل **https://nodejs.org**
-- اضغط على الزر الأخضر **LTS** عشان تحمّل أحدث إصدار
-- افتح الملف اللي نزلته واضغط **Next** كذا مرة لين يتثبّت
-- Node.js يجي مع **npm** تلقائياً (ما تحتاج تنزله منفصل)
+- Go to **https://nodejs.org**
+- Click the green **LTS** button to download the latest version
+- Run the installer and click **Next** until complete
+- Node.js comes with **npm** pre-installed
 
 #### 2. Git
-- ادخل **https://git-scm.com/downloads**
-- اختر نظام التشغيل حقك (Windows / Mac / Linux)
-- احمّل واضغط **Next** كذا مرة لين يتثبّت
+- Go to **https://git-scm.com/downloads**
+- Choose your operating system (Windows / Mac / Linux)
+- Download and install
 
 ---
 
-### ثانياً: تحميل المشروع
+### Installation
 
-#### الطريقة الأسهل: تحميل مباشر (بدون Git)
+#### Option 1: Download ZIP (Easiest)
 
-1. ادخل صفحة المشروع على GitHub:
+1. Go to the project page on GitHub:
    ```
    https://github.com/Raid465/stock-comparison-tool
    ```
 
-2. اضغط على الزر الأخخضر **<> Code**
+2. Click the green **<> Code** button
 
-3. اضغط **Download ZIP**
+3. Click **Download ZIP**
 
-4. افتح الملف اللي نزلته (ZIP) واستخرج المجلد في مكان تبيه (مثلاً على سطح المكتب)
+4. Extract the ZIP file to your desired location
 
-#### الطريقة الثانية: عن طريق Git (للمتقدمين)
+#### Option 2: Clone with Git
 
-افتح الترمنال (CMD أو PowerShell) واكتب:
+Open terminal (CMD or PowerShell) and run:
 ```bash
 git clone https://github.com/Raid465/stock-comparison-tool.git
 cd stock-comparison-tool
@@ -170,67 +170,64 @@ cd stock-comparison-tool
 
 ---
 
-### ثالثاً: تثبّت التبعيات
+### Install Dependencies
 
-1. افتح المجلد اللي استخرجته (أو نزلته)
+1. Open the extracted/cloned folder
 
-2. اضغط كليك يمين على أي فراغ داخل المجلد
+2. Right-click inside the folder
 
-3. اختر **Open in Terminal** أو **Open PowerShell window here**
-   - لو ما لقيت هالخيار، اكتب **cmd** في شريط العنوان واضغط Enter
+3. Select **Open in Terminal** or **Open PowerShell window here**
 
-4. اكتب هالأمر واضغط Enter:
+4. Run the following command:
    ```bash
    npm install
    ```
 
-5. انتظر لين يخلص (ممكن ياخذ دقيقة أو دقيقتين)
-   - رح تشوف رسائل كثيرة تطلع، لا تشيل همها
-   - لما يخلص، رح يرجع لسطر الأمر فاضي
+5. Wait for it to complete (may take 1-2 minutes)
 
 ---
 
-### رابعاً: تشغيل المشروع
+### Run the Project
 
-المشروع يحتاج **نافذتين** مفتوحتين في نفس الوقت:
+The project requires **two windows** open simultaneously:
 
-#### النافذة الأولى: السيرفر
+#### Window 1: Backend Server
 
-1. في نفس الترمنال اللي سويت فيه `npm install`، اكتب:
+1. In the terminal where you ran `npm install`, type:
    ```bash
    npm run server
    ```
 
-2. اضغط Enter
+2. Press Enter
 
-3. رح تشوف هالرسالة:
+3. You should see:
    ```
    ✅ Server on http://localhost:3001
    ```
 
-4. **لا تقفل هالنافذة!** خلها مفتوحة
+4. **Keep this window open!**
 
-#### النافذة الثانية: الواجهة
+#### Window 2: Frontend Dev Server
 
-1. افتح نافذة ترمنال ثانية جديدة:
-   - اضغط **Ctrl + Shift + 5** في VS Code
-   - أو افتح **CMD** أو **PowerShell** جديد
+1. Open a new terminal window:
+   - Press **Ctrl + Shift + 5** in VS Code
+   - Or open a new **CMD** / **PowerShell**
 
-2. اكتب هالأمر واضغط Enter:
+2. Navigate to the project folder:
    ```bash
-   cd "C:\Users\اسم_المستخدم\Desktop\stock-comparison-tool"
+   cd "C:\Users\YourUsername\Desktop\stock-comparison-tool"
    ```
-   - استبدل `اسم_المستخدم` باسم حسابك على الكمبيوتر
-   - أو ببساطة: افتح المجلد في Explorer واضغط كليك يمين > Open in Terminal
+   - Replace `YourUsername` with your actual username
+   - Or simply: Open the folder in Explorer and right-click > Open in Terminal
 
-3. اكتب:
+3. Run:
    ```bash
    npm run dev
    ```
 
-4. اضغط Enter
+4. Press Enter
 
-5. رح تشوف هالرسالة:
+5. You should see:
    ```
    VITE v6.x.x  ready in xxx ms
    ➜  Local:   http://localhost:5173/
@@ -238,139 +235,139 @@ cd stock-comparison-tool
 
 ---
 
-### خامساً: فتح الموقع
+### Open the App
 
-1. افتح أي متصفح (Chrome, Firefox, Edge)
+1. Open any browser (Chrome, Firefox, Edge)
 
-2. اكتب في شريط العنوان:
+2. Type in the address bar:
    ```
    http://localhost:5173
    ```
 
-3. اضغط Enter
+3. Press Enter
 
-4. **مبروك!** الموقع اشتغل 🎉
-
----
-
-### سادساً: كيف تستخدم الأداة
-
-1. في الخانتين فوق، اكتب رمز السهم الأول والثاني
-   - مثلاً: `AAPL` (أبل) و `MSFT` (مايكروسوفت)
-   - رموز الأسهم بالإنجليزي وعادة 3-5 حروف
-
-2. اضغط زر **🔍 قارن**
-
-3. انتظر شوية (ممكن ياخذ 5-10 ثواني)
-
-4. رح تشوف:
-   - بطاقات بيانات السهمين
-   - شارتات بيانية
-   - جدول مقارنة
-   - خلاصة تحليلية
-
-5. لو تبي تقارن أسهم ثانيين، غير الرموز واضغط **قارن** مرة ثانية
+4. **Done!** The app is running 🎉
 
 ---
 
-### رموز الأسهم الشائعة
+### How to Use the Tool
 
-| الرمز | الشركة |
-|-------|--------|
-| AAPL | أبل (Apple) |
-| MSFT | مايكروسوفت (Microsoft) |
-| GOOGL | جوجل (Google) |
-| AMZN | أمازون (Amazon) |
-| TSLA | تسلا (Tesla) |
-| META | ميتا (Meta/Facebook) |
-| NVDA | إنفيديا (Nvidia) |
-| NFLX | نتفليكس (Netflix) |
+1. In the two input fields at the top, enter the stock tickers
+   - Example: `AAPL` (Apple) and `MSFT` (Microsoft)
+   - Stock tickers are in English, usually 3-5 characters
 
----
+2. Click the **🔍 Compare** button
 
-### ⚠️ لو صارت مشكلة
+3. Wait a few seconds (may take 5-10 seconds)
 
-#### المشكلة: "npm is not recognized"
-- معناها Node.js مو مثبّت صح
-- ارجع ثبّت Node.js من https://nodejs.org
+4. You will see:
+   - Stock data cards
+   - Charts
+   - Comparison table
+   - Analytical summary
 
-#### المشكلة: "Port 3001 is already in use"
-- معناها السيرفر شغّال من قبل
-- اقفل كل نوافذ الترمنال وافتحها من جديد
-
-#### المشكلة: الصفحة ما تفتح
-- تأكد إن النافذتين (السيرفر والواجهة) مفتوحين
-- تأكد إنك كتبت الرابط صح: `http://localhost:5173`
-
-#### المشكلة: "Failed to fetch"
-- السيرفر مو شغّال
-- افتح نافذة جديدة واكتب `npm run server`
+5. To compare different stocks, change the tickers and click **Compare** again
 
 ---
 
-## 📸 شكل الأداة
+### Common Stock Tickers
+
+| Ticker | Company |
+|--------|---------|
+| AAPL | Apple |
+| MSFT | Microsoft |
+| GOOGL | Google |
+| AMZN | Amazon |
+| TSLA | Tesla |
+| META | Meta/Facebook |
+| NVDA | Nvidia |
+| NFLX | Netflix |
+
+---
+
+### ⚠️ Troubleshooting
+
+#### Problem: "npm is not recognized"
+- Node.js is not installed correctly
+- Reinstall Node.js from https://nodejs.org
+
+#### Problem: "Port 3001 is already in use"
+- The server is already running
+- Close all terminal windows and start fresh
+
+#### Problem: Page won't open
+- Make sure both windows (server & frontend) are running
+- Verify the URL: `http://localhost:5173`
+
+#### Problem: "Failed to fetch"
+- The backend server is not running
+- Open a new terminal and run `npm run server`
+
+---
+
+## 📸 App Preview
 
 ```
 ┌─────────────────────────────────────────────┐
-│          أداة مقارنة الأسهم                   │
+│          Stock Comparison Tool               │
 ├─────────────────────────────────────────────┤
-│  [AAPL]  VS  [MSFT]     [🔍 قارن]           │
+│  [AAPL]  VS  [MSFT]     [🔍 Compare]        │
 ├────────────────────┬────────────────────────┤
-│   بطاقة AAPL       │   بطاقة MSFT           │
+│   AAPL Card        │   MSFT Card            │
 │   $314.86 ▲51.7%   │   $384.93 ▲XX%         │
 ├────────────────────┴────────────────────────┤
-│   شارت سعر 10 سنوات (جانب بعض)              │
+│   10-Year Price Chart (Side by Side)         │
 ├─────────────────────────────────────────────┤
-│   مقارنة أداء 10 سنوات (Line Chart)          │
+│   10-Year Performance Comparison (Line)      │
 ├────────────────────┬────────────────────────┤
-│   شارت أرباح AAPL  │   شارت أرباح MSFT      │
+│   AAPL Earnings    │   MSFT Earnings        │
 ├────────────────────┴────────────────────────┤
-│   جدول مقارنة تفصيلي                         │
+│   Detailed Comparison Table                  │
 ├────────────────────┬────────────────────────┤
-│   مقارنة مباشرة    │   Radar Chart           │
+│   Direct Compare   │   Radar Chart           │
 ├────────────────────┴────────────────────────┤
-│   📊 الخلاصة                                 │
+│   📊 Summary                                 │
 ├─────────────────────────────────────────────┤
-│   ⚠️ بيانات تقريبية — ليست نصيحة استثمارية    │
+│   ⚠️ Approximate data — not financial advice  │
 └─────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📊 البيانات المعروضة
+## 📊 Displayed Data
 
-| المؤشر | الشرح |
-|--------|-------|
-| السعر | السعر الحالي للسهم |
-| القيمة السوقية | إجمالي قيمة الشركة |
-| P/E | نسبة السعر للربح |
-| Forward P/E | نسبة P/E المتوقعة |
-| EPS | ربحية السهم |
-| هامش الربح | نسبة الربح من الإيرادات |
-| نمو الإيرادات | نسبة تغير المبيعات |
-| ROE | العائد على حقوق الملكية |
-| Beta | مقياس المخاطرة |
-| PEG | نسبة P/E للنمو |
-| الديون/الحقوق | نسبة الديون |
-| التوزيعات | نسبة الدفع النقدي |
-| سعر الهدف | توقعات المحللين |
-
----
-
-## ⚠️ تنويه
-
-- البيانات من **Yahoo Finance** وليست بيانات لحظية من بورصة رسمية
-- لأغراض **تعليمية وبحثية** فقط وليست نصيحة استثمارية
-- قد تكون البيانات متأخرة 15-20 دقيقة
+| Indicator | Description |
+|-----------|-------------|
+| Price | Current stock price |
+| Market Cap | Total company value |
+| P/E | Price-to-Earnings ratio |
+| Forward P/E | Expected P/E ratio |
+| EPS | Earnings Per Share |
+| Profit Margin | Profit percentage from revenue |
+| Revenue Growth | Sales change percentage |
+| ROE | Return on Equity |
+| Beta | Risk measure |
+| PEG | P/E to Growth ratio |
+| Debt/Equity | Debt ratio |
+| Dividends | Cash payout percentage |
+| Target Price | Analyst predictions |
 
 ---
 
-## 📄 الرخصة
+## ⚠️ Disclaimer
 
-  لا يمكنك تعديله ومشاركته بحريه للمشروع.
+- Data is from **Yahoo Finance** and is not real-time from an official exchange
+- For **educational and research purposes** only — not financial advice
+- Data may be delayed by 15-20 minutes
 
 ---
 
-## 📧 التواصل
+## 📄 License
 
-إذا عندك سؤال أو اقتراح، افتح Issue على GitHub.
+You may not modify or freely share this project.
+
+---
+
+## 📧 Contact
+
+If you have any questions or suggestions, open an Issue on GitHub.
